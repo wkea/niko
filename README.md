@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 [![No Runtime](https://img.shields.io/badge/runtime-none%20needed-brightgreen?style=flat-square)](#这是什么)
 
-[安装](#-安装两条命令) · [三分钟上手](#-三分钟上手) · [命令速查](#-命令速查) · [接入聊天软件](#-接入-telegramdiscordslack飞书) · [配置文件](#-配置文件) · [常驻运行](#-常驻运行systemd) · [常见问题](#-常见问题)
+[一键安装](#-安装) · [三分钟上手](#-三分钟上手) · [命令速查](#-命令速查) · [接入聊天软件](#-接入-telegramdiscordslack飞书) · [配置文件](#-配置文件) · [常驻运行](#-常驻运行systemd) · [常见问题](#-常见问题)
 
 </div>
 
@@ -36,11 +36,36 @@
 
 ---
 
-## 📦 安装（两条命令）
+## 📦 安装
 
-预编译包只提供 **Linux**（Niko 目标场景就是跑在 Linux 服务器 / 板卡 / 手机里）。Windows 与 macOS 用一行 `go build` 即可，见下方。
+预编译包只提供 **Linux**（Niko 的目标场景就是 Linux 服务器 / 板卡 / 手机）。Windows 与 macOS 用一行 `go build`，见下方。
 
-### 第一步：确认你的架构
+### 方式一：一键脚本（推荐）
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/wkea/niko/main/install.sh | sh
+```
+
+它会自动判断架构、从 Releases 下载对应包、装进 PATH，并在首次运行时初始化配置（已有配置不会被覆盖；重复执行即升级）。
+
+```bash
+# 完全手动版（不想 curl | sh 的话）
+curl -fsSL -O https://raw.githubusercontent.com/wkea/niko/main/install.sh
+sh install.sh
+```
+
+常用参数：
+
+| 参数 / 变量 | 作用 |
+| --- | --- |
+| `--dir DIR` | 安装目录（默认 `/usr/local/bin`，不可写时用 `~/.local/bin`） |
+| `--version v0.1.0` | 指定版本，默认取最新 Release |
+| `--skip-onboard` | 只装程序，不初始化配置 |
+| `NIKO_BASE_URL` | 下载源前缀，国内可指向镜像站 |
+
+### 方式二：手动安装
+
+#### 第一步：确认你的架构
 
 ```bash
 uname -m
@@ -52,7 +77,7 @@ uname -m
 | `aarch64` / `arm64` | `niko-linux-arm64.tar.gz` | 树莓派 3/4/5（64 位系统）、ARM 服务器 |
 | `armv7l` | `niko-linux-armv7.tar.gz` | 树莓派 Zero 2 W（32 位系统）、老 ARM 板卡 |
 
-### 第二步：下载、解压、放进 PATH
+#### 第二步：下载、解压、放进 PATH
 
 以 x86_64 为例（其它架构只需替换包名）：
 
@@ -99,7 +124,7 @@ echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
 <details>
 <summary>升级怎么做</summary>
 
-重新执行上面的「下载 + 解压 + `sudo install`」即可，配置和记忆都在 `~/.picoclaw`，不会被覆盖。
+重跑一次一键脚本（或重新执行上面的「下载 + 解压 + `sudo install`」）即可。配置和记忆都在 `~/.picoclaw`，不会被覆盖。
 
 > ⚠️ **不要用 `niko update`**：这个自更新命令仍指向上游 `sipeed/picoclaw` 的发布页，会把你的 Niko 替换成上游版本。
 
